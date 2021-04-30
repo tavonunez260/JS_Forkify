@@ -16,6 +16,8 @@ const controlRecipes = async function() {
     const id = window.location.hash.slice(1);
     //To avoid not having any ID to load - guard clause
     if(!id) return;
+    //0. Update results view to selected search result
+    resultsView.update(model.getSearchResultsPage());
     //1. Loading recipe
     await model.loadRecipe(id);
     //2. Rendering recipe
@@ -48,8 +50,17 @@ const controlPagination = function(goToPage) {
   paginationView.render(model.state.search);
 }
 
+const controlServings = function(newServings) {
+  //Update recipe servings (in state)
+  model.updateServings(newServings);
+  //Update the view
+  //recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
+}
+
 const init = function() {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
 }
